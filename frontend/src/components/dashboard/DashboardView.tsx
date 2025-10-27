@@ -13,6 +13,8 @@ import Cursor from '../collaboration/Cursor';
 import ActiveUsers from '../collaboration/ActiveUsers';
 import AnnotationMarker from '../collaboration/AnnotationMarker';
 import AnnotationForm from '../collaboration/AnnotationForm';
+import DataUpload from './DataUpload';
+import { Upload } from 'lucide-react';
 
 const sampleData = [
   { month: 'Jan', revenue: 4000 },
@@ -54,6 +56,7 @@ const DashboardView: React.FC = () => {
   const [cursorColors] = useState<Map<string, string>>(new Map());
   const [isAnnotationMode, setIsAnnotationMode] = useState(false);
   const [annotationForm, setAnnotationForm] = useState<{ x: number; y: number } | null>(null);
+  const [showUploadModal, setShowUploadModal] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -227,6 +230,15 @@ const DashboardView: React.FC = () => {
                 <MessageSquarePlus size={16} />
                 {isAnnotationMode ? 'Click to Annotate' : 'Add Annotation'}
               </button>
+
+              <button
+                onClick={() => setShowUploadModal(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+              >
+              <Upload size={16} />
+                Upload Data
+              </button>
+
               <ActiveUsers />
             </div>
           </div>
@@ -273,6 +285,15 @@ const DashboardView: React.FC = () => {
           </div>
         </div>
       </div>
+      {showUploadModal && (
+      <DataUpload
+        dashboardId={parseInt(id!)}
+        onUploadSuccess={() => {
+          fetchDashboard(parseInt(id!));
+        }}
+        onClose={() => setShowUploadModal(false)}
+      />
+    )}
     </div>
   );
 };

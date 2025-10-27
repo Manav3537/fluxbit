@@ -6,6 +6,7 @@ import { Server } from 'socket.io';
 import authRoutes from './routes/authRoutes';
 import dashboardRoutes from './routes/dashboardRoutes';
 import annotationRoutes from './routes/annotationRoutes';
+import dataRoutes from './routes/dataRoutes';
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboards', dashboardRoutes);
 app.use('/api/annotations', annotationRoutes);
+app.use('/api/data', dataRoutes);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
