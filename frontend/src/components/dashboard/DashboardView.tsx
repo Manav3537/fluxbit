@@ -15,6 +15,9 @@ import AnnotationMarker from '../collaboration/AnnotationMarker';
 import AnnotationForm from '../collaboration/AnnotationForm';
 import DataUpload from './DataUpload';
 import { Upload } from 'lucide-react';
+import AIQueryPanel from '../ai/AIQueryPanel';
+import { Sparkles } from 'lucide-react';
+import DataSourceList from './DataSourceList';
 
 const sampleData = [
   { month: 'Jan', revenue: 4000 },
@@ -57,6 +60,8 @@ const DashboardView: React.FC = () => {
   const [isAnnotationMode, setIsAnnotationMode] = useState(false);
   const [annotationForm, setAnnotationForm] = useState<{ x: number; y: number } | null>(null);
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [showAIPanel, setShowAIPanel] = useState(false);
+  const [currentDataSourceId, setCurrentDataSourceId] = useState<number | null>(null);
 
   useEffect(() => {
     if (id) {
@@ -207,6 +212,7 @@ const DashboardView: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
+
               <button
                 onClick={() => navigate('/dashboards')}
                 className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mr-4"
@@ -214,11 +220,13 @@ const DashboardView: React.FC = () => {
                 <ArrowLeft size={20} />
                 Back
               </button>
+
               <h1 className="text-xl font-semibold text-gray-900">
                 {currentDashboard.name}
               </h1>
             </div>
             <div className="flex items-center gap-4">
+
               <button
                 onClick={() => setIsAnnotationMode(!isAnnotationMode)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
@@ -239,6 +247,18 @@ const DashboardView: React.FC = () => {
                 Upload Data
               </button>
 
+              <button
+                onClick={() => setShowAIPanel(!showAIPanel)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                  showAIPanel
+                  ? 'bg-purple-600 text-white'
+                  : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+                }`}
+              >
+                <Sparkles size={16} />
+                AI Insights
+              </button>
+
               <ActiveUsers />
             </div>
           </div>
@@ -246,6 +266,25 @@ const DashboardView: React.FC = () => {
       </nav>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex gap-6">
+          <div className="w-64 flex-shrink-0">
+            <div className="bg-white rounded-lg shadow-sm p-4">
+              <DataSourceList
+                dashboardId={parseInt(id!)}
+                onSelectDataSource={setCurrentDataSourceId}
+                selectedDataSourceId={currentDataSourceId}
+              />
+            </div>
+          </div>
+
+          <div className="flex-1 space-y-6">
+            {showAIPanel && (
+              <AIQueryPanel
+                dataSourceId={currentDataSourceId}
+                onClose={() => setShowAIPanel(false)}
+              />
+            )}
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white rounded-lg shadow-sm p-6">
             <LineChart
@@ -285,10 +324,14 @@ const DashboardView: React.FC = () => {
           </div>
         </div>
       </div>
+    </div>
+  </div>
       {showUploadModal && (
       <DataUpload
         dashboardId={parseInt(id!)}
-        onUploadSuccess={() => {
+        onUploadSuccess={(dataSourceId) => {
+          setCurrentDataSourceId(dataSourceId);
+          setShowAIPanel(true);
           fetchDashboard(parseInt(id!));
         }}
         onClose={() => setShowUploadModal(false)}

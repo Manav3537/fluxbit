@@ -4,7 +4,7 @@ import api from '../../services/api';
 
 interface DataUploadProps {
   dashboardId: number;
-  onUploadSuccess: () => void;
+  onUploadSuccess: (dataSourceId: number) => void;
   onClose: () => void;
 }
 
@@ -56,7 +56,7 @@ const DataUpload: React.FC<DataUploadProps> = ({ dashboardId, onUploadSuccess, o
       setMetadata(response.data.metadata);
       
       setTimeout(() => {
-        onUploadSuccess();
+        onUploadSuccess(response.data.dataSource.id);
         onClose();
       }, 2000);
     } catch (err: any) {

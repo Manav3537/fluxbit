@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes';
 import dashboardRoutes from './routes/dashboardRoutes';
 import annotationRoutes from './routes/annotationRoutes';
 import dataRoutes from './routes/dataRoutes';
+import aiRoutes from './routes/aiRoutes';
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/dashboards', dashboardRoutes);
 app.use('/api/annotations', annotationRoutes);
 app.use('/api/data', dataRoutes);
+app.use('/api/ai', aiRoutes);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
