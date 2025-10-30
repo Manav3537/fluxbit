@@ -8,3 +8,5 @@ build/
 .vscode/
 .idea/
 uploads/
+.env.production
+.env.*.local
